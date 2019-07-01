@@ -1,50 +1,41 @@
 var express = require('express');
 var router = express.Router();
-
-
-var markdown = require( "markdown" ).markdown;
-
+var markdown = require("markdown").markdown;
 
 var knex = require('knex')({
-    dialect: 'mysql',
-    connection: {
-        host     : 'localhost',
-        user     : 'root',
-        password : '',
-        database : 'my-nodeapp-db',
-        harset  : 'utf8'
-      }
+   dialect: 'mysql',
+   connection: {
+      host: 'localhost',
+      user: 'root',
+      password: '',
+      database: 'my-nodeapp-db',
+      harset: 'utf8'
+   }
 });
-
 
 var Bookshelf = require('bookshelf')(knex);
 
-
 Bookshelf.plugin('pagination');
-
 
 var User = Bookshelf.Model.extend({
    tableName: 'users'
 });
 
-
 var Markdata = Bookshelf.Model.extend({
    tableName: 'markdata',
    hasTimestamps: true,
-   user: function() {
+   user: function () {
       return this.belongsTo(User);
    }
 });
 
-
 router.get('/', (req, res, next) => {
-   if (req.session.login == null){
+   if (req.session.login == null) {
       res.redirect('/login');
       return;
    }
    res.render('add', { title: 'Add' });
 });
-
 
 router.post('/', (req, res, next) => {
    var rec = {
@@ -56,6 +47,5 @@ router.post('/', (req, res, next) => {
       res.redirect('/');
    });
 });
-
 
 module.exports = router;
